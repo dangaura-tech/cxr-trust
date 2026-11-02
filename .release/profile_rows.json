@@ -1,0 +1,9 @@
+{
+ "Structura": "| [**Structura**](https://github.com/dangaura-tech/structura) | 3D Vision \u00b7 Reconstruction | Incremental structure-from-motion and point-cloud processing (bundle adjustment, ICP, COLMAP export) from first principles |",
+ "OccTrack": "| [**OccTrack**](https://github.com/dangaura-tech/occtrack) | Video Understanding \u00b7 Tracking | Occlusion-aware multi-object tracking with camera-motion compensation, Re-ID memory and HOTA evaluation |",
+ "BAU-Net": "| [**BAU-Net**](https://github.com/dangaura-tech/bau-net) | Dense Prediction \u00b7 Uncertainty | Boundary- and uncertainty-aware segmentation with a transformer bottleneck and uncertainty-guided point refinement (medical imaging) |",
+ "CXR-Trust": "| [**CXR-Trust**](https://github.com/dangaura-tech/cxr-trust) | Trustworthy Recognition | Calibrated, explainable multi-label image classification (Grad-CAM++, temperature scaling) on chest X-rays |",
+ "tensorlite": "| [**tensorlite**](https://github.com/dangaura-tech/tensorlite) | Deep Learning Systems | A tiny PyTorch-like framework with reverse-mode autodiff in pure NumPy |",
+ "EmberKV": "| [**EmberKV**](https://github.com/dangaura-tech/emberkv) | Systems \u00b7 Go | Redis-compatible, persistent in-memory key-value server with zero dependencies |",
+ "ChainVault": "| [**ChainVault**](https://github.com/dangaura-tech/chainvault) | Blockchain \u00b7 Solidity | ERC-20 governance token, reward-streaming staking vault and token vesting |"
+}
