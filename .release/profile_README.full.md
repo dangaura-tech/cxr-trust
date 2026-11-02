@@ -69,14 +69,24 @@ around models - from autograd engines to databases to smart contracts.
 
 <div align="center">
 
-<img height="165" src="https://github-readme-stats.vercel.app/api?username=dangaura-tech&show_icons=true&theme=tokyonight&hide_border=true&count_private=true&include_all_commits=true" alt="GitHub stats" />
-<img height="165" src="https://github-readme-stats.vercel.app/api/top-langs/?username=dangaura-tech&layout=compact&theme=tokyonight&hide_border=true&langs_count=8" alt="Top languages" />
-
-<img src="https://streak-stats.demolab.com?user=dangaura-tech&theme=tokyonight&hide_border=true" alt="GitHub streak" />
-
-<img src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=dangaura-tech&theme=tokyonight" alt="Profile summary" />
+<img src="https://raw.githubusercontent.com/dangaura-tech/dangaura-tech/cards/stats.svg" alt="GitHub stats" height="200" />
+<img src="https://raw.githubusercontent.com/dangaura-tech/dangaura-tech/cards/languages.svg" alt="Most used languages" height="200" />
 
 </div>
+
+---
+
+### 🏆 Achievements
+
+<div align="center">
+
+<a href="https://github.com/dangaura-tech?tab=achievements">
+  <img src="https://raw.githubusercontent.com/dangaura-tech/dangaura-tech/cards/achievements.svg" alt="GitHub achievements" />
+</a>
+
+</div>
+
+<sub>Cards are rendered by a scheduled GitHub Action in this repository (<code>scripts/generate_cards.py</code>), so they never depend on rate-limited public services.</sub>
 
 ---
 
