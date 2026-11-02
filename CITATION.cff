@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "CXR-Trust: Calibrated and Explainable Multi-Label Chest X-ray Classification"
+authors:
+  - family-names: Le
+    given-names: Dang Truong Minh
+    affiliation: Mohamed bin Zayed University of Artificial Intelligence
+repository-code: "https://github.com/dangaura-tech/cxr-trust"
+license: MIT
+version: 0.1.0

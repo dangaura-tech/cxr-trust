@@ -1,0 +1,4 @@
+# Ablation: U-Ignore uncertainty policy (uncertain labels masked out of the loss).
+_base_: chexpert_densenet121.yaml
+data:
+  uncertainty_policy: ignore

@@ -1,0 +1,49 @@
+chore: initial project scaffolding
+pyproject.toml
+requirements.txt
+.gitignore
+LICENSE
+cxrtrust/__init__.py
+cxrtrust/utils.py
+
+feat(data): add CheXpert/NIH loaders, uncertainty policies and patient-level splits
+cxrtrust/data/__init__.py
+cxrtrust/data/datasets.py
+cxrtrust/data/transforms.py
+tests/conftest.py
+tests/test_data.py
+
+feat: add torchvision backbones, masked BCE and asymmetric loss
+cxrtrust/models/__init__.py
+cxrtrust/models/classifier.py
+cxrtrust/losses.py
+
+feat: add Grad-CAM and Grad-CAM++ explanations
+cxrtrust/gradcam.py
+tests/test_models_losses.py
+
+feat: add per-class temperature scaling, ECE and AUROC/AUPRC metrics
+cxrtrust/calibration.py
+cxrtrust/metrics.py
+tests/test_calibration_metrics.py
+
+feat: add trainer with EMA weights and train/evaluate/explain tools
+cxrtrust/engine.py
+tools/train.py
+tools/evaluate.py
+tools/explain.py
+
+feat: add experiment configs for CheXpert and NIH ChestX-ray14
+configs/_base_.yaml
+configs/chexpert_densenet121.yaml
+configs/chexpert_uignore.yaml
+configs/chexpert_asl_convnext.yaml
+configs/nih_densenet121.yaml
+scripts/check_data.sh
+
+docs: add README and citation
+README.md
+CITATION.cff
+
+ci: add lint and unit tests workflow
+.github/workflows/ci.yml
