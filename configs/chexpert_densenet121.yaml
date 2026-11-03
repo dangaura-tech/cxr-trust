@@ -1,0 +1,11 @@
+# CheXpert-v1.0-small (https://stanfordmlgroup.github.io/competitions/chexpert/)
+_base_: _base_.yaml
+
+data:
+  name: chexpert
+  image_root: data            # parent of CheXpert-v1.0-small/
+  train_csv: data/CheXpert-v1.0-small/train.csv
+  valid_csv: data/CheXpert-v1.0-small/valid.csv
+  frontal_only: true
+  val_frac: 0.05
+  uncertainty_policy: ones

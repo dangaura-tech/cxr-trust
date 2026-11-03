@@ -1,0 +1,15 @@
+_base_: chexpert_densenet121.yaml
+
+model:
+  backbone: convnext_tiny
+  dropout: 0.2
+
+loss:
+  name: asl
+  gamma_pos: 0.0
+  gamma_neg: 4.0
+  clip: 0.05
+
+train:
+  lr: 5.0e-5
+  batch_size: 48

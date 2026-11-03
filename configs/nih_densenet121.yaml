@@ -1,0 +1,17 @@
+# NIH ChestX-ray14 (https://nihcc.app.box.com/v/ChestXray-NIHCC)
+_base_: _base_.yaml
+
+data:
+  name: nih
+  image_root: data/nih
+  csv: data/nih/Data_Entry_2017.csv
+  val_frac: 0.1
+  test_frac: 0.2
+  image_size: 384
+
+loss:
+  name: bce
+  class_balanced: true
+
+train:
+  epochs: 10
