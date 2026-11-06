@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 """Evaluate a checkpoint: AUROC / AUPRC per finding, ECE and Brier score before and after
-temperature scaling (temperatures are fitted on the validation split).
+temperature scaling, label-conditional conformal coverage, false-negative-rate control and
+risk-coverage (selective prediction). Temperatures and conformal thresholds are fitted on two
+disjoint halves of the validation split.
 
 Example:
-    python tools/evaluate.py --checkpoint runs/chexpert_densenet121/best.pth --out results/chexpert.json
+    python tools/evaluate.py --checkpoint runs/chexpert_densenet121/best.pth --alpha 0.1 \
+        --out results/chexpert.json --save-logits results/chexpert_logits.npz
 """
 
 from __future__ import annotations
@@ -18,15 +21,10 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from cxrtrust.calibration import TemperatureScaler, calibration_report, reliability_curve  # noqa: E402
 from cxrtrust.data import build_dataloaders  # noqa: E402
 from cxrtrust.engine import predict  # noqa: E402
-from cxrtrust.metrics import multilabel_report  # noqa: E402
 from cxrtrust.models import build_model  # noqa: E402
-
-
-def sigmoid(x: np.ndarray) -> np.ndarray:
-    return 1 / (1 + np.exp(-x))
+from cxrtrust.report import print_report, trust_report  # noqa: E402
 
 
 def main() -> None:
@@ -34,6 +32,8 @@ def main() -> None:
     p.add_argument("--checkpoint", required=True)
     p.add_argument("--split", default="test")
     p.add_argument("--out", default=None)
+    p.add_argument("--alpha", type=float, default=0.1, help="risk level for conformal sets and FNR control")
+    p.add_argument("--save-logits", default=None, help="store val/test logits and targets (.npz) for later analysis")
     p.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = p.parse_args()
 
@@ -47,21 +47,12 @@ def main() -> None:
 
     val_logits, val_targets = predict(model, loaders["val"], device)
     logits, targets = predict(model, loaders[args.split], device)
-    scaler = TemperatureScaler(len(labels)).fit(torch.from_numpy(val_logits), torch.from_numpy(val_targets))
-    with torch.no_grad():
-        cal_logits = scaler(torch.from_numpy(logits)).numpy()
-
-    probs, cal_probs = sigmoid(logits), sigmoid(cal_logits)
-    report = multilabel_report(probs, targets, labels)
-    report.update({f"uncalibrated/{k}": v for k, v in calibration_report(probs, targets).items()})
-    report.update({f"calibrated/{k}": v for k, v in calibration_report(cal_probs, targets).items()})
-    report["temperatures"] = dict(zip(labels, scaler.temperature.detach().numpy().round(4).tolist(), strict=True))
-    conf, acc, count = reliability_curve(cal_probs, targets)
-    report["reliability"] = {"confidence": conf.tolist(), "accuracy": acc.tolist(), "count": count.tolist()}
-
-    for k, v in report.items():
-        if isinstance(v, float):
-            print(f"{k:<40} {v:.4f}")
+    report = trust_report(val_logits, val_targets, logits, targets, labels, alpha=args.alpha, seed=cfg.get("seed", 0))
+    print_report(report)
+    if args.save_logits:
+        Path(args.save_logits).parent.mkdir(parents=True, exist_ok=True)
+        np.savez_compressed(args.save_logits, val_logits=val_logits, val_targets=val_targets, logits=logits,
+                            targets=targets, labels=np.array(labels))  # fmt: skip
     if args.out:
         Path(args.out).parent.mkdir(parents=True, exist_ok=True)
         Path(args.out).write_text(json.dumps(report, indent=2, default=lambda o: None))

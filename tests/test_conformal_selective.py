@@ -82,3 +82,22 @@ def test_confidence_scores_rank_errors():
     with pytest.raises(ValueError):
         image_confidence(p, "bogus")
 
+
+def test_trust_report_end_to_end():
+    from cxrtrust.report import trust_report
+
+    rng = np.random.default_rng(7)
+    labels = ["a", "b", "c"]
+
+    def split(n):
+        true = rng.normal([-2.5, -1.0, 0.0], 2.0, (n, 3))  # true log-odds per finding
+        y = (rng.random((n, 3)) < 1 / (1 + np.exp(-true))).astype(np.float32)
+        return (3.0 * true).astype(np.float32), y  # the model is over-confident by a factor 3
+
+    (vl, vy), (tl, ty) = split(4000), split(4000)
+    rep = trust_report(vl, vy, tl, ty, labels, alpha=0.1)
+    assert rep["calibrated/ece"] < rep["uncalibrated/ece"]
+    assert all(2.4 < t < 3.6 for t in rep["temperatures"].values())
+    assert rep["conformal"]["coverage_pos_min"] >= 0.86 and rep["conformal"]["coverage_neg_min"] >= 0.86
+    assert rep["fnr_control"]["fnr"] <= 0.12
+    assert rep["selective"]["entropy"]["risk@50"] <= rep["selective"]["entropy"]["risk@100"]
