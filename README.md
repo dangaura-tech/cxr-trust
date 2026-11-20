@@ -40,6 +40,11 @@ explanation - in one reproducible pipeline:
   findings are protected too. Conformal risk control picks a reporting threshold with a
   guaranteed bound on the per-image **false-negative rate**. Risk-coverage curves (AURC,
   E-AURC) quantify how well uncertainty supports **triage by abstention**.
+* **Deep ensembles and test-time augmentation.** `tools/evaluate.py` accepts several
+  checkpoints, pools them in logit space (so temperature scaling still applies) and reports the
+  members' disagreement as epistemic uncertainty (mutual information). `--tta` additionally
+  averages small scale and shift views; horizontal flips are excluded on purpose because they
+  put the heart on the wrong side.
 * **Zero-shot vision-language baseline.** A biomedical CLIP model (BiomedCLIP by default)
   scores each finding by contrasting ensembles of positive and negative prompts. Its logits go
   through exactly the same calibration and conformal protocol as the trained CNNs, so
@@ -98,6 +103,9 @@ python tools/train.py --config configs/chexpert_densenet121.yaml
 python tools/evaluate.py --checkpoint runs/chexpert_densenet121/best.pth --alpha 0.1 \
     --out results/chexpert_dn121.json --save-logits results/chexpert_dn121_logits.npz
 
+# 2b) ensemble of independently trained models + anatomy-safe test-time augmentation
+python tools/evaluate.py --checkpoint runs/seed0/best.pth runs/seed1/best.pth runs/seed2/best.pth --tta
+
 # 3) explain a single radiograph
 python tools/explain.py --checkpoint runs/chexpert_densenet121/best.pth \
     --image path/to/cxr.jpg --topk 3 --plus-plus --output explanations/
@@ -134,6 +142,7 @@ cxr-trust/
 │   ├── calibration.py   # temperature scaling, ECE, Brier, reliability curve
 │   ├── conformal.py     # Mondrian conformal sets, conformal FNR control
 │   ├── selective.py     # confidence scores, risk-coverage, AURC / E-AURC
+│   ├── ensemble.py      # deep ensembles, epistemic uncertainty, flip-free TTA
 │   ├── gradcam.py       # Grad-CAM and Grad-CAM++
 │   ├── faithfulness.py  # deletion / insertion, pointing game, NIH boxes
 │   ├── zeroshot.py      # prompt-ensembled zero-shot VLM classifier (BiomedCLIP / open_clip)
@@ -165,6 +174,7 @@ cxr-trust/
 * Selvaraju et al., *Grad-CAM*, ICCV 2017; Chattopadhay et al., *Grad-CAM++*, WACV 2018.
 * Ridnik et al., *Asymmetric Loss for Multi-Label Classification*, ICCV 2021.
 * Vovk et al., *Algorithmic Learning in a Random World*, 2005 · Angelopoulos et al., *Conformal Risk Control*, ICLR 2024.
+* Lakshminarayanan et al., *Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles*, NeurIPS 2017.
 * Geifman & El-Yaniv, *Selective Classification for Deep Neural Networks*, NeurIPS 2017.
 * Petsiuk et al., *RISE: Randomized Input Sampling for Explanation*, BMVC 2018 · Zhang et al., *Top-down Neural Attention by Excitation Backprop*, IJCV 2018.
 * Radford et al., *CLIP*, ICML 2021 · Tiu et al., *CheXzero*, Nature BME 2022 · Zhang et al., *BiomedCLIP*, 2023.
